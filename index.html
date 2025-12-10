@@ -12,14 +12,13 @@
 
   <style>
     :root{
-      --overlay: rgba(0,0,0,0.35);  /* Dunkler Layer für bessere Lesbarkeit */
+      --overlay: rgba(0,0,0,0.35);
     }
     html, body {
       height: 100%;
       margin: 0;
     }
     body {
-      /* WICHTIG: Dateiname exakt wie hochgeladen (Groß-/Kleinschreibung)! */
       background-image: url("24eb3ebd-fc44-469d-aafe-52d630bdcb1a.JPG");
       background-size: cover;
       background-position: center;
@@ -28,7 +27,6 @@
       position: relative;
       color: #ffffff;
     }
-    /* Overlay */
     body::before {
       content: "";
       position: fixed;
@@ -36,7 +34,6 @@
       background: var(--overlay);
       pointer-events: none;
     }
-    /* Zentrierung */
     .wrap {
       min-height: 100%;
       display: flex;
@@ -52,7 +49,6 @@
       letter-spacing: 0.08em;
       line-height: 1.05;
       margin: 0 0 1rem 0;
-      /* skaliert zwischen 28px und 72px */
       font-size: clamp(28px, 7vw, 72px);
       text-shadow: 0 2px 20px rgba(0,0,0,0.35);
     }
@@ -68,7 +64,6 @@
       color: #ffffff;
       text-decoration: underline;
     }
-    /* kleine Sicherheitsabstände an sehr kleinen Screens */
     @media (max-width: 420px) {
       .wrap { padding: 12vw 6vw; }
     }
