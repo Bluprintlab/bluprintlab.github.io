@@ -102,6 +102,21 @@ padding: 4vw 4vw;
       .wrap { padding: 12vw 6vw; }
       .logo { width: 80%; }
     }
+.bubble {
+  position: fixed;
+  bottom: -60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.18), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.12);
+  animation: rise linear infinite;
+  pointer-events: none;
+}
+@keyframes rise {
+  0%   { transform: translateY(0) translateX(0px);    opacity: 0;    }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-105vh) translateX(18px); opacity: 0; }
+}
   </style>
 </head>
 <body>
@@ -124,5 +139,24 @@ padding: 4vw 4vw;
       </a>
     </div>
   </div>
+  <script>
+  const sizes   = [6, 9, 7, 11, 8, 6, 10];
+  const lefts   = [8, 19, 34, 51, 63, 77, 88];
+  const delays  = [0, 4, 8, 13, 6, 2, 10];
+  const durations = [18, 24, 20, 28, 22, 26, 19];
+
+  lefts.forEach((left, i) => {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    b.style.cssText = `
+      width: ${sizes[i]}px;
+      height: ${sizes[i]}px;
+      left: ${left}%;
+      animation-duration: ${durations[i]}s;
+      animation-delay: ${delays[i]}s;
+    `;
+    document.body.appendChild(b);
+  });
+</script>
 </body>
 </html>
