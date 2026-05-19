@@ -1,15 +1,12 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>bluprint lab – Coming soon</title>
-
-  <!-- Google Fonts: Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
   <style>
     :root{
       --overlay: rgba(0,0,0,0);
@@ -48,14 +45,25 @@
       max-width: 400px;
       width: 60%;
       height: auto;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       filter: drop-shadow(0 2px 12px rgba(0,0,0,0.4));
+    }
+    .description {
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 300;
+      font-size: clamp(13px, 2vw, 18px);
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 0 2rem 0;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      color: var(--white);
+      opacity: 0.92;
     }
     .sub {
       font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       font-weight: 400;
       line-height: 1.6;
-      margin: 0;
+      margin: 0 0 2.5rem 0;
       font-size: clamp(14px, 2.6vw, 24px);
       text-shadow: 0 2px 12px rgba(0,0,0,0.35);
       color: var(--white);
@@ -66,7 +74,29 @@
       transition: opacity 0.2s ease;
     }
     .sub a:hover {
-      opacity: 0;
+      opacity: 0.7;
+    }
+    .supported-by {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .supported-by span {
+      font-family: "Poppins", system-ui, sans-serif;
+      font-weight: 300;
+      font-size: clamp(10px, 1.5vw, 13px);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--white);
+      opacity: 0.6;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+    }
+    .incubator-logo {
+      height: 60px;
+      width: auto;
+      opacity: 0.85;
+      filter: drop-shadow(0 1px 6px rgba(0,0,0,0.4));
     }
     @media (max-width: 420px) {
       .wrap { padding: 12vw 6vw; }
@@ -76,13 +106,24 @@
 </head>
 <body>
   <div class="wrap">
-    <!-- Logo-Bild (achte auf den exakten Dateinamen deines Logos im Repo) -->
     <img src="logo.png" alt="bluprint lab Logo" class="logo">
+    <p class="description">
+      Bluprint Lab develops site-specific, 3D-printed reef modules from local clay
+      to restore biodiversity in urban waterways. Through scientific monitoring and
+      impact reporting, we help cities and port operators meet their biodiversity
+      targets and offset obligations.
+    </p>
     <p class="sub">
       coming soon<br>
       contact: <a href="mailto:info@bluprintlab.com">info@bluprintlab.com</a><br>
       <a href="https://www.linkedin.com/company/bluprintlab" target="_blank">LinkedIn</a>
     </p>
+    <div class="supported-by">
+      <span>supported by</span>
+      <a href="https://gateway49.com" target="_blank">
+        <img src="LOGO_gateway49_weiss.png" alt="Gateway49 Accelerator" class="incubator-logo">
+      </a>
+    </div>
   </div>
 </body>
 </html>
