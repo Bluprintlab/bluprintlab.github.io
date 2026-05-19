@@ -113,10 +113,13 @@ padding: 4vw 4vw;
   z-index: 9999;
 }
 @keyframes rise {
-  0%   { transform: translateY(0) translateX(0px);    opacity: 0;    }
+  0%   { transform: translateY(0) translateX(0px);      opacity: 0; }
   10%  { opacity: 1; }
+  25%  { transform: translateY(-25vh) translateX(12px); }
+  50%  { transform: translateY(-50vh) translateX(-8px); }
+  75%  { transform: translateY(-75vh) translateX(14px); }
   90%  { opacity: 0.6; }
-  100% { transform: translateY(-105vh) translateX(18px); opacity: 0; }
+  100% { transform: translateY(-105vh) translateX(-6px); opacity: 0; }
 }
   </style>
 </head>
@@ -141,10 +144,10 @@ padding: 4vw 4vw;
     </div>
   </div>
   <script>
-  const sizes   = [6, 9, 7, 11, 8, 6, 10];
-  const lefts   = [8, 19, 34, 51, 63, 77, 88];
-  const delays  = [0, 4, 8, 13, 6, 2, 10];
-  const durations = [18, 24, 20, 28, 22, 26, 19];
+ const sizes   = [9, 12, 10, 14, 11, 9, 13, 10, 12, 11];
+const lefts   = [5, 14, 24, 35, 46, 57, 67, 76, 85, 93];
+const delays  = [0, 5, 9, 14, 3, 7, 11, 2, 16, 8];
+const durations = [18, 24, 20, 28, 22, 26, 19, 23, 21, 25];
 
   lefts.forEach((left, i) => {
     const b = document.createElement('div');
