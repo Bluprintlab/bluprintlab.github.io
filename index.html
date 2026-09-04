@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>bluprint lab – building life underwater</title>
+
+<!--
+  ============================================================
+  ASSET CHECKLIST for Mats — all files sit next to index.html
+  ============================================================
+  DONE (already correct):
+    logo.png              your original logo
+
+  REPLACE WITH ORIGINALS (keep the exact filenames!):
+    hero-video.mp4        the reef loop video, 8–15s, ideally under 10 MB
+    hero-video.webm       optional 2nd format, smaller file
+    hero-poster.jpg       still frame shown while the video loads
+    about-team.jpg        you + Jael on the quay
+    about-underwater.jpg  underwater shot behind the About text
+    service-design.jpg      the 3D printer at work
+    service-installation.jpg  installing modules at the pontoon
+    service-monitoring.jpg    a colonised module underwater
+    products-hero.jpg     harbour photo behind the PRODUCTS panel
+    module-1.mp4          Jael's Rhino turntable clip, module 1
+    module-2.mp4          module 2
+    module-3.mp4          module 3
+    module-1.jpg          still frame for module 1 (shown before the clip loads)
+    module-2.jpg          still frame for module 2
+    module-3.jpg          still frame for module 3
+    product-information.pdf   the spec sheet the button downloads
+    oslo-before.jpg       the bare module, April
+    oslo-after.jpg        the colonised module, August
+    logo-teal.png         teal version of your logo (already made)
+    urban-ocean-teal.png  teal Urban Ocean logo (already made)
+    team-mats.jpg         your portrait (square crop works best)
+    team-jael.jpg         Jael's portrait
+    project-oslo.jpg / project-gothenburg.jpg / project-flensburg.jpg
+    project-helsingborg.jpg
+      ^ one photo per map pin, shown at the top of the panel.
+        Landscape, roughly 760 x 470. Add a new one by pointing the
+        project's "image:" field at the new filename.
+    logo-gateway49.png / logo-zfe.png / logo-gu-ventures.png
+    logo-goteborg.png / logo-flensburg.png / logo-helsingborg.png
+    logo-urban-ocean.png / logo-rise.png / logo-mdt.png / logo-thuenen.png
+    logo-lansstyrelsen.png / logo-ceos.png
+      ^ partner logos. These are used as MASKS, so only the transparent
+        shape matters, never the file's own colours. Upload each as a PNG
+        with a transparent background and the site tints them all teal
+        automatically. A logo saved on a white background would show up
+        as a teal rectangle, so make sure the background really is
+        transparent. logo-rise, logo-mdt and logo-thuenen are currently
+        plain text stand-ins waiting for the real files.
+
+  Filenames are case sensitive on GitHub Pages.
+  Hero-Video.mp4 is NOT the same file as hero-video.mp4
+  ============================================================
+  FONTS: Telegraf is the real thing (free via Fontshare).
+  Avenir is not licensable for free web use, so headings use
+  "General Sans" as a close geometric stand-in.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=telegraf@400,500,600,700&f[]=general-sans@500,600,700&display=swap">
+
+<!-- Mapbox GL JS, used only by the Projects map -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
+
+<style>
+  :root{
+    --teal: #065f71;
+    --teal-dark: #04434f;
+    --cream: #f8f5f0;
+    --white: #ffffff;
+    --font-head: 'General Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+    --font-body: 'Telegraf', system-ui, -apple-system, Segoe UI, sans-serif;
+    --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--teal-dark);
+    -webkit-font-smoothing: antialiased;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; }
+  ul{ list-style:none; margin:0; padding:0; }
+
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ---------- shared reveal on scroll ---------- */
+  .reveal{
+    opacity:0;
+    transform: translateY(24px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.is-visible{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .reveal{ opacity:1; transform:none; transition:none; }
+  }
+
+  /* ================= HERO ================= */
+  .hero{
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    color: var(--white);
+    overflow: hidden;
+  }
+  .hero-video{
+    position:absolute; inset:0; z-index:0;
+    width:100%; height:100%;
+    object-fit:cover;
+  }
+  .hero-scrim{
+    position:absolute; inset:0; z-index:1;
+    background: linear-gradient(180deg, rgba(4,30,36,.45) 0%, rgba(4,30,36,.08) 22%, rgba(4,30,36,.05) 55%, rgba(4,30,36,.55) 100%);
+    pointer-events:none;
+  }
+  .topbar{
+    position: relative; z-index: 2;
+    display:flex; align-items:flex-start; justify-content:space-between;
+    gap: 1rem;
+    padding: 1.5rem clamp(1.25rem, 3vw, 2.5rem) 0;
+  }
+  .brand-logo{
+    height: 46px; width:auto;
+    filter: drop-shadow(0 2px 10px rgba(0,0,0,.35));
+  }
+  .nav-pills{ display:flex; gap:.6rem; flex-wrap:wrap; justify-content:center; }
+  .nav-pills a{
+    display:inline-block;
+    padding: .55rem 1.15rem;
+    border: 1px solid rgba(255,255,255,.75);
+    border-radius: 999px;
+    font-size: .85rem; font-weight: 500; white-space: nowrap;
+    transition: background .2s ease, color .2s ease;
+  }
+  .nav-pills a:hover{ background: var(--white); color: var(--teal-dark); }
+
+  .top-right{ display:flex; flex-direction:column; align-items:flex-end; gap:.65rem; }
+  .socials{ display:flex; gap:.7rem; }
+  .socials a{
+    width:35px; height:35px;
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(255,255,255,.75);
+    border-radius:9px;
+    transition: background .2s ease, color .2s ease;
+  }
+  .socials a:hover{ background: var(--white); color: var(--teal-dark); }
+  .socials svg{ width:18.5px; height:18.5px; }
+
+  .lang-switch{ display:flex; align-items:center; gap:.4rem; font-family:var(--font-head); font-size:.78rem; }
+  .lang-btn{
+    background:none; border:none; color:var(--white);
+    opacity:.55; font-weight:600; letter-spacing:.02em; padding:.1rem .15rem;
+  }
+  .lang-btn.is-active{ opacity:1; text-decoration:underline; text-underline-offset:3px; }
+  .lang-sep{ opacity:.4; }
+
+  .hero-center{
+    position:relative; z-index:2; flex:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding: 2rem 1.25rem 0;
+  }
+  .hero-logo{
+    width: min(558px, 65vw); height:auto;
+    filter: drop-shadow(0 4px 22px rgba(0,0,0,.35));
+  }
+  .hero-tagline{
+    position:relative; z-index:2; text-align:center;
+    font-weight:500; font-size: clamp(1.05rem, 1.76vw, 1.27rem);
+    margin: 2rem 0 0;
+    padding: 0 1.25rem calc(clamp(6.6rem, 17.6vh, 12.1rem) + 1cm);
+  }
+  .counter{
+    position:absolute; z-index:2;
+    right: clamp(1.25rem, 3vw, 2.5rem);
+    bottom: clamp(1.25rem, 3vw, 2.5rem);
+    text-align:right; font-size:.85rem; line-height:1.5;
+  }
+  .counter p{ margin:0; }
+  .counter-num{ font-weight:700; font-family: var(--font-head); }
+
+  .scroll-cue{
+    position:absolute; z-index:2; left:50%; bottom:1.4rem;
+    transform: translateX(-50%);
+    width:22px; height:34px;
+    border:1.5px solid rgba(255,255,255,.8); border-radius:12px;
+  }
+  .scroll-cue span{
+    position:absolute; top:6px; left:50%;
+    width:4px; height:4px; margin-left:-2px;
+    border-radius:50%; background:var(--white);
+    animation: scrollDot 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollDot{
+    0%{ opacity:1; transform:translateY(0); }
+    70%{ opacity:0; transform:translateY(10px); }
+    100%{ opacity:0; transform:translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){ .scroll-cue span{ animation:none; opacity:1; } }
+
+  /* ================= ABOUT (split card) ================= */
+  .about{
+    padding: clamp(4rem, 9vw, 7.5rem) var(--gutter);
+    background: var(--cream);
+  }
+  .about-split{
+    max-width: 1240px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(4,67,79,.13);
+  }
+  .about-photo{
+    width:100%; height:100%;
+    object-fit: cover;
+    min-height: 420px;
+  }
+  .about-panel{
+    position: relative;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    padding: clamp(2.25rem, 4.5vw, 3.75rem);
+    color: var(--white);
+    overflow:hidden;
+  }
+  .about-panel-bg{
+    position:absolute; inset:0; z-index:0;
+    width:100%; height:100%; object-fit:cover;
+  }
+  .about-panel::after{
+    content:""; position:absolute; inset:0; z-index:1;
+    background: linear-gradient(180deg, rgba(6,95,113,.86), rgba(4,67,79,.9));
+  }
+  /* only the text sits above the tint, the photo stays underneath */
+  .about-panel > h2,
+  .about-panel > p{ position:relative; z-index:2; }
+
+  .about-kicker{
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+    letter-spacing:.02em;
+    margin:0;
+    line-height:1.05;
+  }
+  .about-kicker-sub{
+    margin:.3rem 0 2.4rem;
+    font-size:1rem;
+    opacity:.9;
+  }
+  .about-lead,
+  .about-body{
+    font-size: clamp(1.02rem, 1.65vw, 1.26rem);
+    line-height:1.5;
+    max-width: 30ch;
+  }
+  .about-lead{ margin: 0 0 2.2rem; }
+  .about-body{ margin: 0 0 2.4rem; }
+  .about-place{
+    font-size:.85rem;
+    opacity:.8;
+    margin:0;
+  }
+
+  /* ================= SERVICE ================= */
+  .service{
+    padding: clamp(4rem, 9vw, 7rem) var(--gutter) clamp(4rem, 9vw, 7rem);
+    background: var(--cream);
+    color: var(--teal);
+  }
+  .section-head{
+    text-align:center;
+    margin: 0 auto clamp(2.1rem, 4.25vw, 3.2rem);
+  }
+  .section-title{
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+    letter-spacing:.02em;
+    line-height:1.05;
+    margin:0;
+  }
+  .section-sub{
+    margin:.3rem 0 0;
+    font-size:1rem;
+    opacity:.85;
+  }
+
+  .service-grid{
+    max-width: 1240px;
+    margin: 0 auto;
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.25rem, 2.4vw, 2rem);
+  }
+  .service-card{
+    display:flex;
+    flex-direction:column;
+  }
+  .service-media{
+    border-radius: 10px;
+    overflow:hidden;
+    aspect-ratio: 4 / 3;
+    margin-bottom: .9rem;
+  }
+  .service-media img{
+    width:100%; height:100%;
+    object-fit:cover;
+    transition: transform .5s ease;
+  }
+  .service-body{
+    flex:1;
+    border: 1px solid var(--teal);
+    border-radius: 10px;
+    padding: clamp(1.15rem, 2vw, 1.6rem);
+    transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
+  }
+  .service-card:hover .service-media img,
+  .service-card:focus-within .service-media img{ transform: scale(1.05); }
+  .service-card:hover .service-body,
+  .service-card:focus-within .service-body{
+    transform: translateY(-5px);
+    box-shadow: 0 14px 34px rgba(4,67,79,.16);
+  }
+  .service-icon{
+    width: 30px; height: 30px;
+    color: var(--teal);
+    margin-bottom: .6rem;
+  }
+  .service-title{
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(1.1rem, 1.7vw, 1.35rem);
+    margin: 0 0 .65rem;
+    line-height:1.2;
+  }
+  .service-text{
+    margin:0;
+    font-size: clamp(.92rem, 1.25vw, 1rem);
+    line-height:1.55;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .service-media img, .service-body{ transition:none; }
+    .service-card:hover .service-media img{ transform:none; }
+    .service-card:hover .service-body{ transform:none; }
+  }
+
+  /* ================= PRODUCTS ================= */
+  .products{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    align-items:stretch;
+    background: var(--cream);
+  }
+
+  .products-left{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height: clamp(540px, 84vh, 780px);
+    padding: clamp(3.5rem, 11vh, 6.5rem) clamp(1.75rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 3.75rem);
+    color: var(--white);
+    overflow:hidden;
+  }
+  .products-bg{
+    position:absolute; inset:0; z-index:0;
+    width:100%; height:100%; object-fit:cover;
+  }
+  .products-left::after{
+    content:""; position:absolute; inset:0; z-index:1;
+    background: rgba(6,95,113,.5);
+  }
+  /* only the content sits above the tint, the photo stays underneath */
+  .products-left > div{ position:relative; z-index:2; }
+
+  .products-head .section-title,
+  .products-head .section-sub{ color: var(--white); }
+  .products-head{ text-align:center; }
+
+  .products-foot{ max-width: 46ch; }
+  .products-claim{
+    font-size: clamp(.95rem, 1.4vw, 1.08rem);
+    line-height:1.55;
+    margin: 0 0 1.6rem;
+  }
+  .btn-download{
+    display:inline-block;
+    background: var(--cream);
+    color: var(--teal);
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(.85rem, 1.15vw, .96rem);
+    padding: .9rem 2rem;
+    border-radius: 999px;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .btn-download:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.25);
+  }
+
+  .products-right{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    padding: clamp(3.5rem, 11vh, 6.5rem) clamp(1.75rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 3.75rem);
+    color: var(--teal);
+  }
+  .products-right h3{
+    font-family: var(--font-head);
+    font-weight:600;
+    font-size: clamp(1.3rem, 2.1vw, 1.7rem);
+    margin: 0 0 clamp(1.5rem, 3vh, 2.25rem);
+  }
+  .module-list{
+    flex:1;
+    width:100%;
+    max-width: 460px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap: clamp(1rem, 2vh, 1.75rem);
+  }
+  .module{
+    display:grid;
+    grid-template-columns: clamp(130px, 15vw, 200px) 1fr;
+    gap: clamp(1rem, 2.2vw, 1.75rem);
+    align-items:center;
+    text-align:left;
+  }
+  .module-media{
+    border-radius:10px;
+    overflow:hidden;
+    background: rgba(6,95,113,.06);
+    aspect-ratio: 1;
+  }
+  .module-media video,
+  .module-media img{
+    width:100%; height:100%;
+    object-fit:cover;
+  }
+  .module-name{
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(1.02rem, 1.5vw, 1.22rem);
+    margin: 0 0 .4rem;
+  }
+  .module-specs{
+    margin:0;
+    font-size: clamp(.9rem, 1.25vw, 1.02rem);
+    line-height:1.6;
+    opacity:.9;
+  }
+  .module-specs span{ display:block; }
+
+  /* ================= PROJECTS MAP ================= */
+  .projects{
+    padding: clamp(4rem, 9vw, 7rem) var(--gutter);
+    background: var(--cream);
+    color: var(--teal);
+  }
+  .map-wrap{
+    position:relative;
+    max-width: 1240px;
+    margin: 0 auto;
+    height: clamp(540px, 78vh, 760px);
+    border-radius: 14px;
+    overflow:hidden;
+    box-shadow: 0 18px 50px rgba(4,67,79,.16);
+    background: #0b1a2a;
+  }
+  #map{ position:absolute; inset:0; }
+
+  .map-panel{
+    position:absolute;
+    top: 14px; left: 14px; bottom: 14px;
+    width: clamp(300px, 32%, 400px);
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.28);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    z-index: 5;
+  }
+  .map-panel-img{
+    width:100%;
+    height: 190px;
+    object-fit:cover;
+    flex-shrink:0;
+    background: rgba(6,95,113,.08);
+  }
+  .map-panel-body{
+    padding: 1.35rem 1.4rem 1.6rem;
+    overflow-y:auto;
+  }
+  .map-panel-title{
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: 1.25rem;
+    margin: 0 0 .2rem;
+  }
+  .map-panel-meta{
+    margin: 0 0 .9rem;
+    font-size: .92rem;
+    opacity:.8;
+  }
+  .map-panel-rule{
+    height:1px;
+    background: rgba(6,95,113,.18);
+    margin: 0 0 .9rem;
+  }
+  .map-panel-text{
+    margin:0;
+    font-size: .97rem;
+    line-height: 1.62;
+  }
+  .map-panel-status{
+    display:inline-flex;
+    align-items:center;
+    gap:.45rem;
+    font-size:.78rem;
+    font-weight:600;
+    font-family: var(--font-head);
+    margin-bottom:.75rem;
+  }
+  .map-panel-status i{
+    width:9px; height:9px; border-radius:50%;
+    background: currentColor;
+    display:inline-block;
+  }
+  .map-panel-empty{
+    margin:auto;
+    padding: 2rem 1.5rem;
+    text-align:center;
+    font-size:.95rem;
+    line-height:1.6;
+    opacity:.75;
+  }
+
+  .map-marker{
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.9);
+    box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    cursor: pointer;
+    transition: transform .2s ease;
+  }
+  .map-marker:hover{ transform: scale(1.3); }
+  .map-marker.is-active{ transform: scale(1.4); }
+
+  .map-legend{
+    position:absolute;
+    right: 14px; bottom: 14px;
+    z-index:5;
+    background: rgba(255,255,255,.93);
+    border-radius: 8px;
+    padding: .7rem .9rem;
+    font-size:.76rem;
+    line-height:1.7;
+    box-shadow: 0 6px 18px rgba(0,0,0,.2);
+  }
+  .map-legend span{ display:flex; align-items:center; gap:.5rem; }
+  .map-legend i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  .map-fallback{
+    position:absolute; left:0; right:0; bottom:0; z-index:6;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    padding: 1rem 1.25rem;
+    color: var(--white);
+    background: rgba(11,26,42,.92);
+    font-size:.85rem;
+    line-height:1.5;
+  }
+
+  /* ================= IMPACT / DIPTYCH ================= */
+  .impact{
+    padding: clamp(1rem, 2vw, 1.5rem) var(--gutter) clamp(4rem, 9vw, 7rem);
+    background: var(--cream);
+    color: var(--teal);
+  }
+  .impact-inner{
+    max-width: 1040px;
+    margin: 0 auto;
+    text-align:center;
+  }
+  .impact .section-head{ margin-bottom: clamp(1.1rem, 2.2vw, 1.6rem); }
+  .impact-brands{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.85rem;
+    margin: 0 0 clamp(1.2rem, 2.4vw, 1.75rem);
+  }
+  .impact-brands img{ width:auto; object-fit:contain; }
+  .impact-brands .brand-a{ height: clamp(31px, 3.9vw, 42px); }
+  .impact-brands .brand-b{ height: clamp(14px, 1.7vw, 18px); }
+  .impact-brands span{
+    font-family: var(--font-head);
+    font-weight:600;
+    font-size:.85rem;
+    opacity:.5;
+  }
+  .impact-caption{
+    position:absolute;
+    z-index:3;
+    top:0;
+    left:50%;
+    transform: translateX(-50%);
+    margin:0;
+    max-width: 86%;
+    white-space: nowrap;
+    background: var(--cream);
+    color: var(--teal);
+    padding: .95rem 2rem;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-family: var(--font-head);
+    font-weight:600;
+    font-size: clamp(.88rem, 1.4vw, 1.05rem);
+    line-height:1.45;
+  }
+
+  .diptych{
+    position:relative;
+    max-width: 884px;
+    margin: 0 auto;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    border-radius: 14px;
+    overflow:hidden;
+    box-shadow: 0 18px 50px rgba(4,67,79,.18);
+  }
+  .diptych figure{
+    position:relative;
+    margin:0;
+    aspect-ratio: 2 / 3;
+    background:#0d2b2f;
+  }
+  .diptych img{
+    width:100%; height:100%;
+    object-fit:cover;
+  }
+  .diptych figcaption{
+    position:absolute;
+    left: clamp(.85rem, 1.8vw, 1.25rem);
+    bottom: clamp(.85rem, 1.8vw, 1.25rem);
+    background: rgba(6,95,113,.85);
+    color: var(--white);
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(.75rem, 1vw, .88rem);
+    padding: .45rem 1rem;
+    border-radius: 999px;
+  }
+
+  /* ================= PARTNERS + CONTACT + TEAM ================= */
+  .closing{
+    padding: clamp(1rem, 2vw, 1.5rem) var(--gutter) clamp(3rem, 6vw, 4.5rem);
+    background: var(--cream);
+    color: var(--teal);
+  }
+  .closing-inner{ max-width: 1100px; margin: 0 auto; text-align:center; }
+
+  .logo-group{ margin-bottom: clamp(3rem, 6vw, 4.5rem); }
+  .logo-group h3{
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(1.35rem, 2.6vw, 2rem);
+    letter-spacing:.02em;
+    margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .logo-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap: clamp(1.75rem, 4vw, 3.25rem);
+  }
+  /* every logo is flattened to one colour, so the source file's own colours don't matter */
+  .logo-mono{
+    display:block;
+    width: auto;
+    height: var(--h, 54px);
+    max-width: var(--w, 150px);
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(38%) sepia(74%) saturate(431%) hue-rotate(143deg) brightness(74%) contrast(112%);
+    opacity:.85;
+    transition: opacity .25s ease;
+  }
+  a:hover > .logo-mono{ opacity:1; }
+
+  .contact-block{
+    padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(3rem, 6vw, 4.5rem);
+  }
+  .contact-lead{
+    margin: 0 0 .5rem;
+    font-size: clamp(.95rem, 1.4vw, 1.08rem);
+    opacity:.85;
+  }
+  .contact-block h2{
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+    margin: 0 0 1.6rem;
+    letter-spacing:.02em;
+  }
+  .btn-contact{
+    display:inline-block;
+    background: var(--teal);
+    color: var(--cream);
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(.9rem, 1.2vw, 1rem);
+    padding: 1rem 2.4rem;
+    border-radius: 999px;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .btn-contact:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(4,67,79,.28);
+  }
+
+  .team-row{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .team-card{
+    display:flex;
+    align-items:center;
+    gap: clamp(.9rem, 2vw, 1.4rem);
+    text-align:left;
+  }
+  .team-card img{
+    width: clamp(84px, 11vw, 116px);
+    aspect-ratio:1;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+  }
+  .team-name{
+    font-family: var(--font-head);
+    font-weight:700;
+    font-size: clamp(.98rem, 1.35vw, 1.1rem);
+    margin: 0 0 .15rem;
+  }
+  .team-meta{
+    margin:0;
+    font-size: clamp(.76rem, 1vw, .85rem);
+    line-height:1.5;
+    opacity:.85;
+  }
+  .team-meta a{ text-decoration:underline; text-underline-offset:2px; }
+  .team-degree{ white-space: nowrap; }
+
+  .site-foot{
+    max-width:1100px;
+    margin: clamp(3rem, 6vw, 4.5rem) auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(6,95,113,.18);
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    font-size:.82rem;
+    opacity:.75;
+  }
+  .site-foot a{ text-decoration:underline; text-underline-offset:2px; }
+  .foot-legal{ display:inline-block; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px){
+    .about-split{ grid-template-columns: 1fr; }
+    .about-photo{ min-height: 320px; }
+    .service-grid{ grid-template-columns: 1fr; max-width: 520px; }
+    .products{ grid-template-columns: 1fr; }
+    .products-left{ min-height: 60vh; gap: 3rem; }
+    .products-right{ max-width: 560px; margin: 0 auto; width:100%; }
+
+    .map-wrap{ height: 78vh; }
+    .map-panel{
+      top:auto; left: 10px; right: 10px; bottom: 10px;
+      width:auto;
+      max-height: 52%;
+    }
+    .map-panel-img{ height: 120px; }
+    .map-legend{ bottom: auto; top: 12px; right: 12px; font-size:.7rem; padding:.55rem .7rem; }
+
+    .team-row{ grid-template-columns: 1fr; max-width: 340px; }
+    .logo-row{ gap: 1.5rem 2rem; }
+    .site-foot{ justify-content:center; text-align:center; }
+    .impact-caption{ white-space: normal; max-width: 92%; padding: .7rem 1.1rem; font-size: .8rem; text-align:center; }
+  }
+  @media (max-width: 760px){
+    .topbar{ flex-wrap:wrap; }
+    .brand-logo{ height: 38px; }
+    .nav-pills{
+      order:3; width:100%;
+      justify-content:flex-start; overflow-x:auto;
+      padding-top:.9rem;
+    }
+    .counter{ font-size:.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <video class="hero-video" autoplay muted loop playsinline poster="hero-poster.jpg" aria-hidden="true">
+    <source src="hero-video.webm" type="video/webm">
+    <source src="hero-video.mp4" type="video/mp4">
+  </video>
+  <div class="hero-scrim" aria-hidden="true"></div>
+
+  <nav class="topbar">
+    <a href="#" aria-label="bluprint lab">
+      <img src="logo.png" alt="bluprint lab – building life underwater" class="brand-logo">
+    </a>
+
+    <ul class="nav-pills">
+      <li><a href="#about" data-de="Über uns" data-en="About">About</a></li>
+      <li><a href="#services" data-de="Produkte &amp; Service" data-en="Products &amp; Services">Products &amp; Services</a></li>
+      <li><a href="#projects" data-de="Projekte" data-en="Projects">Projects</a></li>
+      <li><a href="#contact" data-de="Kontakt" data-en="Contact">Contact</a></li>
+    </ul>
+
+    <div class="top-right">
+      <div class="socials">
+        <a href="https://www.linkedin.com/company/bluprintlab" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="10" x2="8" y2="17"/><circle cx="8" cy="6.7" r="1"/><path d="M12 17v-4.2c0-1.4 1-2.3 2.3-2.3S16.5 11.4 16.5 12.8V17"/></svg>
+        </a>
+        <a href="https://www.instagram.com/blu.print.lab" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </a>
+      </div>
+      <div class="lang-switch">
+        <button type="button" class="lang-btn is-active" data-set-lang="en">EN</button>
+        <span class="lang-sep">|</span>
+        <button type="button" class="lang-btn" data-set-lang="de">DE</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero-center">
+    <img src="logo.png" alt="bluprint lab – building life underwater" class="hero-logo">
+  </div>
+
+  <p class="hero-tagline"
+     data-de="Die One-Stop Shop Lösung für marine Renaturierungsmaßnahmen"
+     data-en="the one-stop shop for marine restoration">
+     the one-stop shop for marine restoration
+   </p>
+
+  <div class="counter" aria-live="polite">
+    <p><span class="counter-num" data-target="6">0</span> <span data-de="Module installiert" data-en="modules installed">modules installed</span></p>
+    <p><span class="counter-num" data-target="18">0</span> m² <span data-de="Lebensraum geschaffen" data-en="habitat created">habitat created</span></p>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true"><span></span></div>
+</header>
+
+<!-- ================= ABOUT ================= -->
+<section class="about" id="about">
+  <div class="about-split reveal">
+    <img src="about-team.jpg" alt="Jael Kahlenberg Caso und Mats Heitzmann mit Riffmodulen am Kai"
+         class="about-photo" loading="lazy">
+
+    <div class="about-panel">
+      <img src="about-underwater.jpg" alt="" class="about-panel-bg" loading="lazy" aria-hidden="true">
+
+      <h2 class="about-kicker" data-de="ÜBER UNS" data-en="ABOUT">ABOUT</h2>
+      <p class="about-kicker-sub" data-de="Was wir tun" data-en="What we do">What we do</p>
+
+      <p class="about-lead"
+         data-de="Wir verbinden Meereswissenschaft und Architektur, um marines Leben zurück in urbane Gewässer zu bringen."
+         data-en="We combine marine science and architecture to bring marine life back to urban waters.">
+         We combine marine science and architecture to bring marine life back to urban waters.
+       </p>
+
+      <p class="about-body"
+         data-de="Bluprint Lab druckt Plug-and-play-Riffmodule aus lokalem Ton im 3D-Verfahren und begleitet sie mit Monitoring, damit Städte, NGOs und Hafenbetreiber die Rückkehr der Biodiversität beobachten und ihre Umweltziele erreichen können."
+         data-en="Bluprint Lab 3D-prints plug-and-play reef modules from local clay and monitors the results, so cities, NGOs and port operators can watch biodiversity return and meet their environmental targets.">
+         Bluprint Lab 3D-prints plug-and-play reef modules from local clay and monitors the results, so cities, NGOs and port operators can watch biodiversity return and meet their environmental targets.
+       </p>
+
+      <p class="about-place" data-de="Sitz in Kiel, Deutschland" data-en="Based in Kiel, Germany">Based in Kiel, Germany</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICE ================= -->
+<section class="service" id="services">
+  <div class="section-head reveal">
+    <h2 class="section-title" data-de="SERVICE" data-en="SERVICE">SERVICE</h2>
+    <p class="section-sub" data-de="Was wir anbieten" data-en="What we offer">What we offer</p>
+  </div>
+
+  <div class="service-grid">
+
+    <article class="service-card reveal">
+      <div class="service-media">
+        <img src="service-design.jpg" alt="3D-Drucker beim Fertigen eines Riffmoduls" loading="lazy">
+      </div>
+      <div class="service-body">
+        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M15.2 8.8l-2 4.4-4.4 2 2-4.4z"/>
+        </svg>
+        <h3 class="service-title" data-de="Beratung &amp; Design" data-en="Consultation &amp; Design">Consultation &amp; Design</h3>
+        <p class="service-text"
+           data-de="Wir analysieren die Bedingungen vor Ort, eure ökologischen Ziele und die regulatorischen Auflagen und entwerfen daraus Riffmodule, die exakt zu diesem Standort passen. Ihr bekommt ein Renaturierungskonzept, das auf die lokalen Arten, das Substrat und die Wasserbedingungen zugeschnitten ist."
+           data-en="We assess your site's conditions, ecological goals and regulatory obligations, then design reef modules tailored to that exact location. You get a restoration concept shaped around the local species, substrate and water conditions.">
+           We assess your site's conditions, ecological goals and regulatory obligations, then design reef modules tailored to that exact location. You get a restoration concept shaped around the local species, substrate and water conditions.
+         </p>
+      </div>
+    </article>
+
+    <article class="service-card reveal">
+      <div class="service-media">
+        <img src="service-installation.jpg" alt="Installation der Riffmodule an einem Steg" loading="lazy">
+      </div>
+      <div class="service-body">
+        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M15.5 3.5a4.5 4.5 0 00-5.9 5.4L3.8 14.7a1.8 1.8 0 002.5 2.5l5.8-5.8a4.5 4.5 0 005.4-5.9L14.9 8 12 5.1z"/>
+        </svg>
+        <h3 class="service-title" data-de="Installation &amp; Wartung" data-en="Installation &amp; Maintenance">Installation &amp; Maintenance</h3>
+        <p class="service-text"
+           data-de="Wir übernehmen die praktische Seite, von der Fertigung der Module bis zum Einbringen vor Ort. Die Module werden nach dem Plug-and-play-Prinzip an bestehender Infrastruktur befestigt, wodurch die Installationskosten gering bleiben. So entsteht ein funktionierender Riff-Lebensraum, ohne dass ihr eigenes marines Fachwissen aufbauen müsst."
+           data-en="We handle the practical side, from producing the modules to placing them at your site. The modules attach plug and play to existing infrastructure which keeps installation costs low. You gain a functioning reef habitat without needing to build up marine expertise in-house.">
+           We handle the practical side, from producing the modules to placing them at your site. The modules attach plug and play to existing infrastructure which keeps installation costs low. You gain a functioning reef habitat without needing to build up marine expertise in-house.
+         </p>
+      </div>
+    </article>
+
+    <article class="service-card reveal">
+      <div class="service-media">
+        <img src="service-monitoring.jpg" alt="Bewachsenes Riffmodul unter Wasser" loading="lazy">
+      </div>
+      <div class="service-body">
+        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M4 19V5"/><path d="M4 19h16"/><path d="M7.5 15.5l3.5-4 3 2.5 4.5-6"/>
+        </svg>
+        <h3 class="service-title" data-de="Monitoring &amp; Reporting" data-en="Monitoring &amp; Reporting">Monitoring &amp; Reporting</h3>
+        <p class="service-text"
+           data-de="Wir erfassen, wie sich Leben auf den Modulen ansiedelt, und machen daraus verständliche Wirkungsberichte. Damit habt ihr die Nachweise für Biodiversitätsziele, Ausgleichsverpflichtungen und die CSRD-Berichterstattung."
+           data-en="We track how life returns to the modules and turn that into clear impact reports. This gives you the evidence you need for biodiversity targets, offset obligations and CSRD reporting.">
+           We track how life returns to the modules and turn that into clear impact reports. This gives you the evidence you need for biodiversity targets, offset obligations and CSRD reporting.
+         </p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ================= PRODUCTS ================= -->
+<section class="products" id="products">
+
+  <div class="products-left">
+    <img src="products-hero.jpg" alt="" class="products-bg" loading="lazy" aria-hidden="true">
+
+    <div class="products-head reveal">
+      <h2 class="section-title" data-de="PRODUKTE" data-en="PRODUCTS">PRODUCTS</h2>
+      <p class="section-sub" data-de="Was wir anbieten" data-en="What we offer">What we offer</p>
+    </div>
+
+    <div class="products-foot reveal">
+      <p class="products-claim"
+         data-de="Aus recycelten Materialien 3D-gedruckt, werden unsere Habitatmodule individuell entworfen, passend zu jeder Lage und jedem Ökosystem. Wir verwenden recycelten Aushubton von lokalen Baustellen, der normalerweise als Abfall behandelt wird. Zu Terrakotta gebrannt, bildet er eine stabile, schadstofffreie Oberfläche, die von marinem Leben schnell besiedelt wird."
+         data-en="3D-printed from recycled materials, our habitat modules are designed individually to match any location or ecosystem. We use recycled excavation clay from local construction sites, normally treated as waste. Fired into terracotta, it forms a stable, non-toxic surface that marine life readily colonises.">
+         3D-printed from recycled materials, our habitat modules are designed individually to match any location or ecosystem. We use recycled excavation clay from local construction sites, normally treated as waste. Fired into terracotta, it forms a stable, non-toxic surface that marine life readily colonises.
+       </p>
+      <a class="btn-download" href="product-information.pdf" download
+         data-de="Produktinformation herunterladen" data-en="Download Product Information">
+         Download Product Information
+       </a>
+    </div>
+  </div>
+
+  <div class="products-right">
+    <h3 class="reveal" data-de="Design Beispiele" data-en="Design Examples">Design Examples</h3>
+
+    <div class="module-list">
+
+      <article class="module reveal">
+        <div class="module-media">
+          <video autoplay muted loop playsinline preload="none" poster="module-1.jpg" aria-label="Modul 1, rotierende Ansicht">
+            <source src="module-1.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div>
+          <h4 class="module-name" data-de="Modul 1" data-en="Module 1">Module 1</h4>
+          <p class="module-specs">
+            <span>xx kg</span>
+            <span data-de="xx m² Oberfläche" data-en="xx m² surface area">xx m² surface area</span>
+          </p>
+        </div>
+      </article>
+
+      <article class="module reveal">
+        <div class="module-media">
+          <video autoplay muted loop playsinline preload="none" poster="module-2.jpg" aria-label="Modul 2, rotierende Ansicht">
+            <source src="module-2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div>
+          <h4 class="module-name" data-de="Modul 2" data-en="Module 2">Module 2</h4>
+          <p class="module-specs">
+            <span>xx kg</span>
+            <span data-de="xx m² Oberfläche" data-en="xx m² surface area">xx m² surface area</span>
+          </p>
+        </div>
+      </article>
+
+      <article class="module reveal">
+        <div class="module-media">
+          <video autoplay muted loop playsinline preload="none" poster="module-3.jpg" aria-label="Modul 3, rotierende Ansicht">
+            <source src="module-3.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div>
+          <h4 class="module-name" data-de="Modul 3" data-en="Module 3">Module 3</h4>
+          <p class="module-specs">
+            <span>xx kg</span>
+            <span data-de="xx m² Oberfläche" data-en="xx m² surface area">xx m² surface area</span>
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJECTS ================= -->
+<section class="projects" id="projects">
+  <div class="section-head reveal">
+    <h2 class="section-title" data-de="PROJEKTE" data-en="PROJECTS">PROJECTS</h2>
+    <p class="section-sub" data-de="Was wir gemacht haben" data-en="What we've done">What we've done</p>
+  </div>
+
+  <div class="map-wrap reveal">
+    <div id="map"></div>
+
+    <aside class="map-panel" id="map-panel">
+      <p class="map-panel-empty" id="map-panel-empty"
+         data-de="Klicke auf einen Punkt auf der Karte, um das Projekt zu sehen."
+         data-en="Click a point on the map to see the project.">
+         Click a point on the map to see the project.
+      </p>
+    </aside>
+
+    <div class="map-legend" id="map-legend" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ================= IMPACT ================= -->
+<section class="impact" id="impact">
+  <div class="impact-inner">
+
+    <div class="section-head reveal">
+      <h2 class="section-title" data-de="IMPACT" data-en="IMPACT">IMPACT</h2>
+      <p class="section-sub" data-de="Der Praxisnachweis" data-en="Proof of concept">Proof of concept</p>
+    </div>
+
+    <div class="impact-brands reveal">
+      <img src="logo-teal.png" alt="bluprint lab" class="brand-a">
+      <span>&times;</span>
+      <img src="urban-ocean-teal.png" alt="Urban Ocean" class="brand-b">
+    </div>
+
+    <div class="diptych reveal">
+      <p class="impact-caption"
+         data-de="5 Monate Entwicklung unserer Pilottests im Oslofjord"
+         data-en="5 month development of our pilot tests in Oslo fjord">
+         5 month development of our pilot tests in Oslo fjord
+      </p>
+
+      <figure>
+        <img src="oslo-before.jpg" alt="Das frisch installierte Riffmodul im Oslofjord" loading="lazy">
+        <figcaption>April 26</figcaption>
+      </figure>
+      <figure>
+        <img src="oslo-after.jpg" alt="Das Riffmodul im Oslofjord nach f&uuml;nf Monaten, dicht bewachsen" loading="lazy">
+        <figcaption>August 26</figcaption>
+      </figure>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= SUPPORT, PARTNERS, CONTACT, TEAM ================= -->
+<section class="closing" id="contact">
+  <div class="closing-inner">
+
+    <div class="logo-group reveal">
+      <h3 data-de="SUPPORT" data-en="SUPPORT">SUPPORT</h3>
+      <div class="logo-row">
+        <a href="https://gateway49.com" target="_blank" rel="noopener" aria-label="Gateway49 Accelerator">
+          <img src="logo-gateway49.png" alt="" class="logo-mono" loading="lazy" style="--w:88px; --h:82px;"></a>
+        <a href="#" aria-label="ZfE">
+          <img src="logo-zfe.png" alt="" class="logo-mono" loading="lazy" style="--w:78px; --h:78px;"></a>
+        <a href="https://guventures.com" target="_blank" rel="noopener" aria-label="GU Ventures">
+          <img src="logo-gu-ventures.png" alt="" class="logo-mono" loading="lazy" style="--w:150px; --h:44px;"></a>
+      </div>
+    </div>
+
+    <div class="logo-group reveal">
+      <h3 data-de="PARTNER" data-en="PARTNERS">PARTNERS</h3>
+      <div class="logo-row">
+        <a href="#" aria-label="G&ouml;teborgs Stad">
+          <img src="logo-goteborg.png" alt="" class="logo-mono" loading="lazy" style="--w:62px; --h:82px;"></a>
+        <a href="#" aria-label="Flensburger Meeresgarten">
+          <img src="logo-flensburg.png" alt="" class="logo-mono" loading="lazy" style="--w:104px; --h:80px;"></a>
+        <a href="#" aria-label="Helsingborg">
+          <img src="logo-helsingborg.png" alt="" class="logo-mono" loading="lazy" style="--w:132px; --h:48px;"></a>
+        <a href="#" aria-label="Urban Ocean">
+          <img src="logo-urban-ocean.png" alt="" class="logo-mono" loading="lazy" style="--w:144px; --h:38px;"></a>
+        <a href="https://www.ri.se" target="_blank" rel="noopener" aria-label="RISE">
+          <img src="logo-rise.png" alt="" class="logo-mono" loading="lazy" style="--w:96px; --h:52px;"></a>
+        <a href="#" aria-label="MDT Kolding">
+          <img src="logo-mdt.png" alt="" class="logo-mono" loading="lazy" style="--w:104px; --h:60px;"></a>
+        <a href="https://www.thuenen.de" target="_blank" rel="noopener" aria-label="Th&uuml;nen Institut f&uuml;r Ostseefischerei">
+          <img src="logo-thuenen.png" alt="" class="logo-mono" loading="lazy" style="--w:134px; --h:62px;"></a>
+        <a href="#" aria-label="L&auml;nsstyrelsen">
+          <img src="logo-lansstyrelsen.png" alt="" class="logo-mono" loading="lazy" style="--w:150px; --h:46px;"></a>
+        <a href="#" aria-label="CEOS">
+          <img src="logo-ceos.png" alt="" class="logo-mono" loading="lazy" style="--w:104px; --h:50px;"></a>
+      </div>
+    </div>
+
+    <div class="contact-block reveal">
+      <p class="contact-lead"
+         data-de="Du hast ein Projekt im Kopf?"
+         data-en="You have a project in mind?">
+         You have a project in mind?
+      </p>
+      <h2 data-de="KONTAKT" data-en="CONTACT US">CONTACT US</h2>
+      <a class="btn-contact" href="mailto:info@bluprintlab.com"
+         data-de="E-Mail schreiben" data-en="Send us an email">Send us an email</a>
+    </div>
+
+    <div class="team-row reveal">
+      <div class="team-card">
+        <img src="team-jael.jpg" alt="Jael Kahlenberg Caso" loading="lazy">
+        <div>
+          <p class="team-name">Jael Kahlenberg Caso</p>
+          <p class="team-meta">
+            <span class="team-degree">M.Sc. in Architecture and Urban Design</span><br>
+            <span data-de="Design &amp; Produktentwicklung" data-en="Design &amp; Product Development">Design &amp; Product Development</span><br>
+            <a href="mailto:jael@bluprintlab.com">jael@bluprintlab.com</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <img src="team-mats.jpg" alt="Mats Heitzmann" loading="lazy">
+        <div>
+          <p class="team-name">Mats Heitzmann</p>
+          <p class="team-meta">
+            <span class="team-degree">M.Sc. in Marine Science</span><br>
+            <span data-de="&Ouml;kologische Wirkungsanalyse" data-en="Ecological Impact Evaluation">Ecological Impact Evaluation</span><br>
+            <a href="mailto:mats@bluprintlab.com">mats@bluprintlab.com</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-foot">
+      <span class="foot-legal">
+        &copy; 2026 bluprint lab
+        &nbsp;&middot;&nbsp;
+        <a href="#"
+           data-de="Datenschutzerkl&auml;rung" data-en="Privacy policy">Privacy policy</a>
+        &nbsp;&middot;&nbsp;
+        <a href="#"
+           data-de="Impressum" data-en="Legal notice">Legal notice</a>
+        &nbsp;&middot;&nbsp;
+        <a href="#"
+           data-de="Cookie-Richtlinie (EU)" data-en="Cookie policy (EU)">Cookie policy (EU)</a>
+      </span>
+      <span>
+        <a href="https://www.linkedin.com/company/bluprintlab" target="_blank" rel="noopener">LinkedIn</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://www.instagram.com/blu.print.lab" target="_blank" rel="noopener">Instagram</a>
+        &nbsp;&middot;&nbsp;
+        <a href="mailto:info@bluprintlab.com">info@bluprintlab.com</a>
+      </span>
+    </div>
+
+  </div>
+</section>
+
+
+<script>
+(function(){
+  var root = document.documentElement;
+
+  function applyLang(lang){
+    root.setAttribute('data-lang', lang);
+    root.setAttribute('lang', lang);
+    document.querySelectorAll('[data-de][data-en]').forEach(function(el){
+      el.textContent = el.getAttribute('data-' + lang);
+    });
+    document.querySelectorAll('.lang-btn').forEach(function(btn){
+      btn.classList.toggle('is-active', btn.dataset.setLang === lang);
+    });
+  }
+
+  document.querySelectorAll('[data-set-lang]').forEach(function(btn){
+    btn.addEventListener('click', function(){ applyLang(btn.dataset.setLang); });
+  });
+
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // counter count-up
+  document.querySelectorAll('.counter-num').forEach(function(el){
+    var target = parseInt(el.dataset.target, 10) || 0;
+    if (prefersReduced) { el.textContent = target; return; }
+    var start = null, duration = 1200;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      el.textContent = Math.round(p * target);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+
+  // reveal on scroll
+  var revealItems = document.querySelectorAll('.reveal');
+  if (prefersReduced || !('IntersectionObserver' in window)){
+    revealItems.forEach(function(el){ el.classList.add('is-visible'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+    revealItems.forEach(function(el){ io.observe(el); });
+  }
+
+
+  applyLang('en');
+})();
+</script>
+
+<script>
+/* ============================================================
+   PROJECTS MAP — the only two things you ever need to edit
+   ============================================================ */
+
+/* 1) Paste your Mapbox public token between the quotes.
+      It starts with pk. and it is meant to be public. */
+var MAPBOX_TOKEN = 'pk.eyJ1IjoibWFiaXRzIiwiYSI6ImNtdGx5NG8yYzAxZ3gyeHNoaWw0cXRmY2MifQ.qKL079aQV4L3bt8d283vrQ';
+
+/* 2) Your projects. Copy a block to add one, delete a block to remove one.
+      status must be one of: installed / pilot / planned
+      image is optional — leave it as '' if you have no photo yet.
+      lat/lng: right-click a spot in Google Maps and it copies the two numbers. */
+var PROJECTS = [
+  {
+    name:    'Oslo, Sukkerbiten',
+    country: 'Norway',
+    status:  'installed',
+    lat: 59.9040, lng: 10.7530,
+    image: 'project-oslo.jpg',
+    text_en: 'Together with the team of Urban Ocean, we installed our first reef modules in April 2026. They are located in Langkaia and Sukkerbiten and attached to the floating saunas, where they create new habitat for ocean wildlife.',
+    text_de: 'Gemeinsam mit dem Team von Urban Ocean haben wir im April 2026 unsere ersten Riffmodule installiert. Sie liegen in Langkaia und Sukkerbiten und sind an den schwimmenden Saunen befestigt, wo sie neuen Lebensraum für Meerestiere schaffen.'
+  },
+  {
+    name:    'Gothenburg, Frihamnen',
+    country: 'Sweden',
+    status:  'pilot',
+    lat: 57.7180, lng: 11.9540,
+    image: 'project-gothenburg.jpg',
+    text_en: 'Together with the University of Gothenburg and Gothenburg municipality, we installed two reefs on the floating platform "Flytevi" next to the marine allotment project.',
+    text_de: 'Gemeinsam mit der Universität Göteborg und der Stadt Göteborg haben wir zwei Riffe auf der schwimmenden Plattform "Flytevi" neben dem marinen Schrebergarten-Projekt installiert.'
+  },
+  {
+    name:    'Flensburg, Hafenspitze',
+    country: 'Germany',
+    status:  'pilot',
+    lat: 54.7900, lng: 9.4360,
+    image: 'project-flensburg.jpg',
+    text_en: 'With the local initiative Flensburger Meeresgarten, we installed reef modules at the floating pier in Flensburg, directly in the city centre. So far we can see a lot of blue mussel growth on the modules, and we look forward to continuing to monitor them closely.',
+    text_de: 'Mit der lokalen Initiative Flensburger Meeresgarten haben wir Riffmodule am Schwimmsteg in Flensburg installiert, direkt in der Innenstadt. Bisher sehen wir starken Bewuchs mit Miesmuscheln, und wir freuen uns darauf, die Module weiter eng zu begleiten.'
+  },
+  {
+    name:    'Helsingborg, Oceanhamnen',
+    country: 'Sweden',
+    status:  'pilot',
+    lat: 56.0430, lng: 12.6980,
+    image: 'project-helsingborg.jpg',
+    text_en: 'In collaboration with the municipality of Helsingborg, we installed two habitat modules in Helsingborg Oceanhamnen, hanging in the marine testbed underneath the walkway. Right now we see very strong macroalgae coverage, and we are in the process of testing detailed monitoring protocols.',
+    text_de: 'In Zusammenarbeit mit der Stadt Helsingborg haben wir zwei Habitatmodule in Helsingborg Oceanhamnen installiert, die im marinen Testfeld unterhalb des Stegs hängen. Aktuell sehen wir sehr starken Makroalgenbewuchs, und wir erproben gerade detaillierte Monitoring-Protokolle.'
+  }
+];
+
+/* ---- nothing below here needs editing ---- */
+(function(){
+  var STATUS = {
+    installed: { color:'#065f71', en:'Installed',  de:'Installiert' },
+    pilot:     { color:'#3fa8a0', en:'Pilot site', de:'Pilotstandort' },
+    planned:   { color:'#c9a227', en:'Planned',    de:'Geplant' }
+  };
+
+  var wrap = document.querySelector('.map-wrap');
+  var panel = document.getElementById('map-panel');
+  var legend = document.getElementById('map-legend');
+  if (!wrap || !panel) return;
+
+  function lang(){ return document.documentElement.getAttribute('data-lang') || 'en'; }
+
+  function showFallback(msgEn, msgDe){
+    var el = document.createElement('div');
+    el.className = 'map-fallback';
+    el.setAttribute('data-en', msgEn);
+    el.setAttribute('data-de', msgDe);
+    el.textContent = lang() === 'de' ? msgDe : msgEn;
+    wrap.appendChild(el);
+  }
+
+  if (typeof mapboxgl === 'undefined'){
+    showFallback('The map could not be loaded.', 'Die Karte konnte nicht geladen werden.');
+    return;
+  }
+  if (!MAPBOX_TOKEN || MAPBOX_TOKEN.indexOf('pk.') !== 0){
+    showFallback('Add your Mapbox token at the top of the map script to switch the map on.',
+                 'Trage oben im Karten-Skript deinen Mapbox-Token ein, um die Karte zu aktivieren.');
+    return;
+  }
+
+  // legend
+  Object.keys(STATUS).forEach(function(key){
+    var row = document.createElement('span');
+    var dot = document.createElement('i');
+    dot.style.background = STATUS[key].color;
+    var label = document.createElement('span');
+    label.setAttribute('data-en', STATUS[key].en);
+    label.setAttribute('data-de', STATUS[key].de);
+    label.textContent = lang() === 'de' ? STATUS[key].de : STATUS[key].en;
+    row.appendChild(dot); row.appendChild(label);
+    legend.appendChild(row);
+  });
+
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/light-v11',
+    projection: 'globe',
+    center: [10.5, 56.5],
+    zoom: 3.1,
+    attributionControl: true
+  });
+
+  map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+  map.scrollZoom.disable(); // so the page still scrolls normally over the map
+
+  // If Mapbox refuses the token or the style, say so on screen instead of showing a blank map
+  var errorShown = false, mapLoaded = false;
+  map.on('load', function(){
+    mapLoaded = true;
+    var stale = wrap.querySelector('.map-fallback');
+    if (stale) stale.remove();
+  });
+  map.on('error', function(e){
+    if (errorShown || mapLoaded) return;
+    errorShown = true;
+    var msg = (e && e.error && e.error.message) ? e.error.message : 'unknown error';
+    var status = (e && e.error && e.error.status) ? ' (status ' + e.error.status + ')' : '';
+    showFallback('Mapbox error: ' + msg + status, 'Mapbox-Fehler: ' + msg + status);
+  });
+
+  map.on('style.load', function(){
+    map.setFog({
+      color: 'rgb(220, 232, 238)',
+      'high-color': 'rgb(36, 92, 123)',
+      'space-color': 'rgb(11, 26, 42)',
+      'horizon-blend': 0.02,
+      'star-intensity': 0.12
+    });
+  });
+
+  var markers = [];
+
+  function renderPanel(p){
+    var l = lang();
+    var st = STATUS[p.status] || STATUS.planned;
+    panel.innerHTML = '';
+
+    if (p.image){
+      var img = document.createElement('img');
+      img.className = 'map-panel-img';
+      img.src = p.image;
+      img.alt = p.name;
+      panel.appendChild(img);
+    }
+
+    var body = document.createElement('div');
+    body.className = 'map-panel-body';
+
+    var status = document.createElement('p');
+    status.className = 'map-panel-status';
+    status.style.color = st.color;
+    status.innerHTML = '<i></i>';
+    var stText = document.createElement('span');
+    stText.setAttribute('data-en', st.en);
+    stText.setAttribute('data-de', st.de);
+    stText.textContent = l === 'de' ? st.de : st.en;
+    status.appendChild(stText);
+
+    var title = document.createElement('h3');
+    title.className = 'map-panel-title';
+    title.textContent = p.name;
+
+    var meta = document.createElement('p');
+    meta.className = 'map-panel-meta';
+    meta.textContent = p.country;
+
+    var rule = document.createElement('div');
+    rule.className = 'map-panel-rule';
+
+    var text = document.createElement('p');
+    text.className = 'map-panel-text';
+    text.setAttribute('data-en', p.text_en);
+    text.setAttribute('data-de', p.text_de);
+    text.textContent = l === 'de' ? p.text_de : p.text_en;
+
+    body.appendChild(status);
+    body.appendChild(title);
+    body.appendChild(meta);
+    body.appendChild(rule);
+    body.appendChild(text);
+    panel.appendChild(body);
+  }
+
+  PROJECTS.forEach(function(p){
+    var st = STATUS[p.status] || STATUS.planned;
+
+    var el = document.createElement('div');
+    el.className = 'map-marker';
+    el.style.background = st.color;
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('aria-label', p.name);
+
+    var marker = new mapboxgl.Marker({ element: el })
+      .setLngLat([p.lng, p.lat])
+      .setPopup(new mapboxgl.Popup({ offset: 16, closeButton: false })
+        .setHTML('<strong>' + p.name + '</strong><br>' + p.country))
+      .addTo(map);
+
+    function select(){
+      markers.forEach(function(m){ m.classList.remove('is-active'); });
+      el.classList.add('is-active');
+      renderPanel(p);
+      map.easeTo({ center: [p.lng, p.lat], zoom: Math.max(map.getZoom(), 4.6), duration: 900 });
+    }
+
+    el.addEventListener('click', select);
+    el.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); select(); }
+    });
+    el.addEventListener('mouseenter', function(){ marker.togglePopup(); });
+    el.addEventListener('mouseleave', function(){ marker.togglePopup(); });
+
+    markers.push(el);
+  });
+})();
+</script>
+
+</body>
+</html>
